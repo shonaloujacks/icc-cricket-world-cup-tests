@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import exp from "constants";
 import { url } from "inspector";
 
 test.describe("Homepage", () => {
@@ -46,7 +47,7 @@ test.describe("Homepage", () => {
     expect(page.url()).toContain("search?q=India");
   });
 
-  test.only("Verify menu tabs text and link", async ({ page }) => {
+  test("Verify menu tabs text and link", async ({ page }) => {
     // Go to homepage
     console.log("************** TEST ******************");
 
@@ -68,6 +69,10 @@ test.describe("Homepage", () => {
       "more",
     ];
 
+    const menuItems = page.locator(
+      "[id^='primaryNavigation_'] .menu-view .menu-list-wrapper > div"
+    );
+
     const actualMenuText = await page
       .locator("[id^='primaryNavigation_'] .menu-view .menu-list-wrapper > div")
       .allInnerTexts();
@@ -79,5 +84,47 @@ test.describe("Homepage", () => {
     const normalizedExpectedMenuText = normalizeArray(expectedMenuText);
 
     expect(await normalizedActualMenuText).toEqual(normalizedExpectedMenuText);
+
+    // Check link and text matches
+
+    const expectedMenuTextLinks = [
+      { text: "ICC Home", href: "/index" },
+      {
+        text: "Matches",
+        href: "/tournaments/womens-t20-worldcup/matches",
+      },
+      {
+        text: "Standings",
+        href: "/tournaments/womens-t20-worldcup/standings",
+      },
+      {
+        text: "Stats",
+        href: "/tournaments/womens-t20-worldcup/stats",
+      },
+      {
+        text: "Teams",
+        href: "/tournaments/womens-t20-worldcup/teams",
+      },
+      {
+        text: "News",
+        href: "/tournaments/womens-t20-worldcup/news",
+      },
+      {
+        text: "videos",
+        href: "/tournaments/womens-t20-worldcup/videos",
+      },
+      {
+        text: "Predictor",
+        href: "/tournaments/womens-t20-worldcup/predictor",
+      },
+    ];
+
+    for (const [index, listItem] of expectedMenuTextLinks.entries()) {
+      const link = menuItems.nth(index).locator("a");
+      console.log(link);
+
+      await expect(link).toHaveText(listItem.text);
+      await expect(link).toHaveAttribute("href", listItem.href);
+    }
   });
 });
