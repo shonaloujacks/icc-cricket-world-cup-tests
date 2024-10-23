@@ -4,7 +4,9 @@ import { url } from "inspector";
 test.describe("Homepage", () => {
   test("Open page and verify url", async ({ page }) => {
     // Go to homepage
-    await page.goto("https://www.icc-cricket.com/");
+    await page.goto(
+      "https://www.icc-cricket.com/tournaments/womens-t20-worldcup"
+    );
 
     // Expect url to include 'cricket'
     await expect(page).toHaveURL(/.*cricket/);
@@ -12,19 +14,21 @@ test.describe("Homepage", () => {
 
   test("Assert logo is visible", async ({ page }) => {
     // Go to homepage
-    await page.goto("https://www.icc-cricket.com/");
+    await page.goto(
+      "https://www.icc-cricket.com/tournaments/womens-t20-worldcup"
+    );
 
     // Assert logo is visible
 
-    const logo = page
-      .getByRole("link", { name: "womens-t20-wc-2024-logo" })
-      .first();
+    const logo = page.getByAltText("womens-t20-wc-2024-logo").first();
     await expect(logo).toBeVisible();
   });
 
   test("Search and verify new url", async ({ page }) => {
     // Go to homepage
-    await page.goto("https://www.icc-cricket.com/");
+    await page.goto(
+      "https://www.icc-cricket.com/tournaments/womens-t20-worldcup"
+    );
 
     // Click on search icon
     await page.getByLabel("Search").click();
