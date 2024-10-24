@@ -85,7 +85,7 @@ test.describe("Homepage", () => {
 
     expect(await normalizedActualMenuText).toEqual(normalizedExpectedMenuText);
 
-    // Check link and text matches
+    // Check menu links and text match
 
     const expectedMenuTextLinks = [
       { text: "ICC Home", href: "/index" },
@@ -119,6 +119,8 @@ test.describe("Homepage", () => {
       },
     ];
 
+    // When using a for of loop, if you use an array like below, the first element will always be assigned to the index, and the second
+    // will be the iteratee. You can call them whatever you like.
     for (const [index, listItem] of expectedMenuTextLinks.entries()) {
       const link = menuItems.nth(index).locator("a");
       console.log(link);
