@@ -5,9 +5,7 @@ import { url } from "inspector";
 test.describe("Homepage", () => {
   test("Open page and verify url", async ({ page }) => {
     // Go to homepage
-    await page.goto(
-      "https://www.icc-cricket.com/tournaments/womens-t20-worldcup"
-    );
+    await page.goto("https://www.icc-cricket.com");
 
     // Expect url to include 'cricket'
     await expect(page).toHaveURL(/.*cricket/);
@@ -15,21 +13,17 @@ test.describe("Homepage", () => {
 
   test("Assert logo is visible", async ({ page }) => {
     // Go to homepage
-    await page.goto(
-      "https://www.icc-cricket.com/tournaments/womens-t20-worldcup"
-    );
+    await page.goto("https://www.icc-cricket.com/");
 
     // Assert logo is visible
 
-    const logo = page.getByAltText("womens-t20-wc-2024-logo").first();
+    const logo = page.getByAltText("Header Logo");
     await expect(logo).toBeVisible();
   });
 
   test("Search and verify new url", async ({ page }) => {
     // Go to homepage
-    await page.goto(
-      "https://www.icc-cricket.com/tournaments/womens-t20-worldcup"
-    );
+    await page.goto("https://www.icc-cricket.com/");
 
     // Click on search icon
     await page.getByLabel("Search").first().click();
@@ -49,24 +43,20 @@ test.describe("Homepage", () => {
 
   test("Verify menu tabs text and link", async ({ page }) => {
     // Go to homepage
-    console.log("************** TEST ******************");
 
-    await page.goto(
-      "https://www.icc-cricket.com/tournaments/womens-t20-worldcup"
-    );
+    await page.goto("https://www.icc-cricket.com/");
 
     // Check that the text matches the menu tabs
     const expectedMenuText = [
-      "icc home",
       "matches",
-      "standings",
-      "stats",
-      "teams",
+      "rankings",
       "news",
       "videos",
-      "predictor",
-      "ticketing",
-      "more",
+      "videos",
+      "teams",
+      "awards",
+      "travel",
+      "shop",
     ];
 
     const menuItems = page.locator(
@@ -88,34 +78,38 @@ test.describe("Homepage", () => {
     // Check menu links and text match
 
     const expectedMenuTextLinks = [
-      { text: "ICC Home", href: "/index" },
+      { text: "Matches", href: "/fixtures-results/" },
       {
-        text: "Matches",
-        href: "/tournaments/womens-t20-worldcup/matches",
-      },
-      {
-        text: "Standings",
-        href: "/tournaments/womens-t20-worldcup/standings",
-      },
-      {
-        text: "Stats",
-        href: "/tournaments/womens-t20-worldcup/stats",
-      },
-      {
-        text: "Teams",
-        href: "/tournaments/womens-t20-worldcup/teams",
+        text: "Rankings",
+        href: "/rankings/",
       },
       {
         text: "News",
-        href: "/tournaments/womens-t20-worldcup/news",
+        href: "/news",
       },
       {
         text: "videos",
-        href: "/tournaments/womens-t20-worldcup/videos",
+        href: "/videos/",
       },
       {
-        text: "Predictor",
-        href: "/tournaments/womens-t20-worldcup/predictor",
+        text: "videos",
+        href: "/videos/",
+      },
+      {
+        text: "Teams",
+        href: "/teams/men",
+      },
+      {
+        text: "Awards",
+        href: "/awards/",
+      },
+      {
+        text: "Travel",
+        href: "https://www.icctravelandtours.com/icc-mens-t20-world-cup-west-indies-usa-2024/",
+      },
+      {
+        text: "Shop",
+        href: "/tournaments/t20cricketworldcup/shop",
       },
     ];
 
@@ -128,5 +122,25 @@ test.describe("Homepage", () => {
       await expect(link).toHaveText(listItem.text);
       await expect(link).toHaveAttribute("href", listItem.href);
     }
+  });
+
+  test("Open new tab and assert the title", async ({ page }) => {
+    // Go to homepage
+    await page.goto("https://www.icc-cricket.com/");
+
+    // Click on the link and wait for the new tab to get triggered
+    const [newPage] = await Promise.all([
+      page.waitForEvent("popup"),
+      page.getByAltText("dp-world-x1422").click(),
+    ]);
+
+    // wait for the new page to load
+    await newPage.waitForLoadState();
+
+    // Verify page title
+    await expect(newPage).toHaveTitle(/DP World/);
+
+    // close the new tab
+    await newPage.close();
   });
 });
